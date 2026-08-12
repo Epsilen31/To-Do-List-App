@@ -4,8 +4,8 @@ Mobile-first task manager matching the Figma design.
 
 ## Stack
 
-- **MongoDB Atlas** – cloud database  
-- **Express** – REST API (`server/`, also exposed as Vercel serverless `api/`)  
+- **MongoDB Atlas** – cloud database
+- **Express** – REST API (`server/`, exposed on Vercel as serverless `api/`)
 - **React + Vite + Tailwind** – UI (`client/`)
 
 ## Local setup
@@ -19,19 +19,16 @@ npm run dev:server
 npm run dev:client
 ```
 
-- App: http://localhost:5173  
-- API: http://localhost:5000/api/health  
+- App: http://localhost:5173
+- API: http://localhost:5000/api/health
 
-## Deploy (recommended: Vercel for frontend + backend)
+## Deploy on Vercel (frontend + API)
 
-Netlify/Vercel are great for static frontends. A normal Express process does **not** stay running on them, so the API is deployed as a **serverless function** (`api/index.js`) on **Vercel**.
+The Express API runs as a **serverless function** (`api/index.js`). The React app is the static frontend. Both ship from one Vercel project (`vercel.json`).
 
-### Option A — Vercel (frontend + API together)
-
-1. Push repo to GitHub.
-2. Import project in [Vercel](https://vercel.com).
-3. Root directory: repo root (uses `vercel.json`).
-4. Environment variables:
+1. Push the repo to GitHub.
+2. Import the project in [Vercel](https://vercel.com) (root of the repo).
+3. Add environment variables:
 
 | Key | Value |
 |-----|--------|
@@ -39,19 +36,16 @@ Netlify/Vercel are great for static frontends. A normal Express process does **n
 | `CLIENT_URL` | `https://your-app.vercel.app` |
 | `NODE_ENV` | `production` |
 
-5. Deploy. App + `/api/*` are on the same domain.
+4. Deploy.
 
-### Option B — Netlify (frontend only) + Vercel (API)
+After deploy:
 
-1. **API:** deploy this same repo on Vercel (or only use the serverless `api/`), set `MONGODB_URI` + `CLIENT_URL=https://your-site.netlify.app`.
-2. **Frontend:** Netlify → base `client`, build `npm run build`, publish `dist`.
-3. In Netlify env:
+- App: `https://your-app.vercel.app`
+- Health: `https://your-app.vercel.app/api/health`
 
-| Key | Value |
-|-----|--------|
-| `VITE_API_URL` | `https://your-api.vercel.app/api` |
+No `VITE_API_URL` needed — the client calls `/api` on the same domain.
 
-`render.yaml` was removed — not needed for Netlify/Vercel.
+In MongoDB Atlas → Network Access, allow `0.0.0.0/0` so Vercel can connect.
 
 ## API
 
