@@ -1,6 +1,13 @@
-require('dotenv').config({
-  path: require('path').join(__dirname, '../server/.env'),
-});
+const path = require('path');
+
+// Vercel injects env vars. Load server/.env only for local serverless testing.
+try {
+  require(path.join(__dirname, '../server/node_modules/dotenv')).config({
+    path: path.join(__dirname, '../server/.env'),
+  });
+} catch {
+  // Host provides env (Vercel) or dotenv already loaded by server entry.
+}
 
 const { createApp } = require('../server/src/app');
 const { connectDatabase } = require('../server/src/config/db');
